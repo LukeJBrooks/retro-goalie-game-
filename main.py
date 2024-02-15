@@ -14,11 +14,11 @@ clock = pygame.time.Clock()
 #set game values
 player_starting_lives = 5
 player_velocity = 10
-ball_start_velocity = 1
+ball_start_velocity = 5
 ball_acceleration = 1
 buffer_distance = -100
 score = 0
-player_lives = 0
+player_lives = player_starting_lives
 ball_velocity = 5
 
 
@@ -34,7 +34,7 @@ BROWN =(150,75,0)
 YELLOW =(255)
 
 #set fonts
-font = pygame.font.Font('SfSportsNight-rrdL.ttf', 40)
+font = pygame.font.Font('SfSportsNight-rrdL.ttf', 35)
 
 #set text
 score_text = font.render('Score:' + str(score), True,PINK,DARK_GREEN)
@@ -50,13 +50,13 @@ lives_text = font.render('Lives:' + str(player_starting_lives), True, PINK, DARK
 lives_rect = lives_text.get_rect()
 lives_rect.topright = WINDOW_WIDTH - 15, 10
 
-game_over_text = font.render('GAMEOVER', True, GREEN, DARK_GREEN)
+game_over_text = font.render('GAMEOVER', True, BLACK, WHITE)
 game_over_rect = game_over_text.get_rect()
-game_over_rect.center = WINDOW_WIDTH//2, WINDOW_HEIGHT// + 32
+game_over_rect.center = WINDOW_WIDTH//2, WINDOW_HEIGHT//2
 
-continue_text = font.render('Press any key to play again', True, GREEN, DARK_GREEN)
+continue_text = font.render('Press any key to play again', True, BLACK, WHITE)
 continue_rect = continue_text.get_rect()
-continue_rect.center = WINDOW_WIDTH//2, WINDOW_HEIGHT//2
+continue_rect.center = WINDOW_WIDTH//2, WINDOW_HEIGHT - 75
 
 #set sounds
 miss_sound = pygame.mixer.Sound("miss_sound.wav")
@@ -89,7 +89,7 @@ while running:
         player_rect.y += player_velocity
 
     if ball_rect.x < 0:
-        player_starting_lives -= 1
+        player_lives -= 1
         miss_sound.play()
         ball_rect.x = WINDOW_WIDTH + buffer_distance
         ball_rect.y = random.randint(64, WINDOW_HEIGHT -32)
@@ -103,10 +103,34 @@ while running:
         ball_velocity += ball_acceleration
         ball_rect.x = WINDOW_WIDTH + buffer_distance
         ball_rect.y = random.randint(64, WINDOW_HEIGHT - 32)
-
+    #update hud
     score_text = font.render('Score:' + str(score), True, PINK, DARK_GREEN)
-    lives_text = font.render('Lives:' + str(player_starting_lives), True, PINK, DARK_GREEN)
+    lives_text = font.render('Lives:' + str(player_lives), True, PINK, DARK_GREEN)
 
+    #game over check
+    if player_lives == 0:
+        display_surface.blit(game_over_text,game_over_rect)
+        display_surface.blit(continue_text,continue_rect)
+        pygame.display.update()
+
+        #pause game until player presses a key and reset
+
+        pygame.mixer.music.stop()
+        is_paused = True
+        while is_paused:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    score = 0
+                    player_lives = player_starting_lives
+                    player_rect.y = WINDOW_HEIGHT//2
+                    ball_velocity = ball_start_velocity
+                    pygame.mixer.music.play(-1,0.0)
+                    is_paused = False
+                if event.type == pygame.QUIT:
+                    is_paused = False
+                    running = False
+
+    
     display_surface.fill(GRASS)
     display_surface.blit(score_text, score_rect)
     display_surface.blit(title_text, title_rect)
