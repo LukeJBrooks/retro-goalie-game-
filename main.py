@@ -41,7 +41,7 @@ score_text = font.render('Score:' + str(score), True,PINK,DARK_GREEN)
 score_rect = score_text.get_rect()
 score_rect.topleft = (10,10)
 
-title_text = font.render('GOAL KEEPER!', True, BROWN, WHITE)
+title_text = font.render('RETRO GOALIE!', True, BROWN, WHITE)
 title_rect = title_text.get_rect()
 title_rect.centerx = WINDOW_WIDTH / 2
 title_rect.y = 10
@@ -50,7 +50,7 @@ lives_text = font.render('Lives:' + str(player_starting_lives), True, PINK, DARK
 lives_rect = lives_text.get_rect()
 lives_rect.topright = WINDOW_WIDTH - 15, 10
 
-game_over_text = font.render('GAMEOVER', True, BLACK, WHITE)
+game_over_text = font.render('GAMEOVER!', True, BLACK, WHITE)
 game_over_rect = game_over_text.get_rect()
 game_over_rect.center = WINDOW_WIDTH//2, WINDOW_HEIGHT//2
 
